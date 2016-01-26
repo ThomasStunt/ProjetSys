@@ -1,0 +1,16 @@
+#Ducauroy Benjamin
+#Perrier Thomas
+#Fichiers de réponses 
+
+#Chapitre 3 Partie 3.2.1
+1- Si on quitte le serveur et qu'on le relance, la console affiche:
+bind socket_serveur: Address already in use.
+
+2-Si on ajoute un délai avant l'envoi du message de bienvenue et qu'on éxécute
+la commande nc -z 127.0.0.1 8080, le message de bienvenue ne s'affiche pas. 
+
+3-Il nous est impossible de répondre à cette question car telnet n'est pas
+installé sur la machine et nous n'avons pas les droits pour l'installer. 
+
+4-Le deuxième client ne se connecte pas car le serveur ne peut gérer qu'un
+seul client à la fois. 
