@@ -49,27 +49,37 @@ int creer_serveur(int port)
       perror("listen socket_serveur");
     }
 
-  int sock_client;
-  sock_client = accept(sock_serveur, NULL, NULL);
-  if(sock_client == -1)
-    {
-      perror("accept socket_client");
-      close(sock_client);
-      return -1;
-    }
-  const char *message_bienvenue = "Bienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
-  const char *buf = malloc(128*sizeof(char));
-  sleep(1);
-  write(sock_client, message_bienvenue, strlen(message_bienvenue));
   while(1)
     {
-      if(read(sock_client, buf, sizeof(buf)) == -1)
+      int sock_client;
+      sock_client = accept(sock_serveur, NULL, NULL);
+      if(sock_client == -1)
 	{
-	  perror("read client");
+	  perror("accept socket_client");
+	  continue;
 	}
-      write(sock_client, buf, strlen(buf));
+      else
+	{
+	  if(fork() == 0)
+	    {
+	      close(sock_serveur);
+	      const char *message_bienvenue = "Bienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
+	      const char *buf = malloc(128*sizeof(char));
+	      sleep(1);
+	      write(sock_client, message_bienvenue, strlen(message_bienvenue));
+	      while(1)
+		{
+		  if(read(sock_client, buf, sizeof(buf)) == -1)
+		    {
+		      perror("read client");
+		    }
+		  write(sock_client, buf, strlen(buf));
+		}
+	      close(sock_client);
+	      exit(0);
+	    }
+	}
     }
-  close(sock_client);
   close(sock_serveur);
 }
 
