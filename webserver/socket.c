@@ -8,11 +8,20 @@
 #include "socket.h"
 #include <signal.h>
 
+void traitement_signal(int sig)
+{
+  printf("signal : %d\n", sig);
+}
+
 void initialiser_signaux(void)
 {
   if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
     {
-      perror("signal");
+      perror("SIGPIE");
+    }
+  if(signal(SIGCHLD, SIG_IGN) == SIG_ERR)
+    {
+      perror("SIGCHLD");
     }
 }
 
@@ -62,9 +71,9 @@ int creer_serveur(int port)
 	{
 	  if(fork() == 0)
 	    {
-	      close(sock_serveur);
+	      //close(sock_serveur);
 	      const char *message_bienvenue = "Bienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
-	      const char *buf = malloc(128*sizeof(char));
+	      char buf[128];
 	      sleep(1);
 	      write(sock_client, message_bienvenue, strlen(message_bienvenue));
 	      while(1)
@@ -75,6 +84,16 @@ int creer_serveur(int port)
 		    }
 		  write(sock_client, buf, strlen(buf));
 		}
+	      struct sigaction sa;
+	      sa.sa_handler = traitement_signal;
+	      sigemptyset(&sa.sa_mask);
+	      sa.sa_flags = SA_NOCLDWAIT;
+	      if(sigaction(SIGCHLD, &sa, NULL) == -1)
+		{
+		  perror("sigaction(SIGCHLD)");
+		}
+	      waitpid(SIGCHLD);
+	      free(buf);
 	      close(sock_client);
 	      exit(0);
 	    }
