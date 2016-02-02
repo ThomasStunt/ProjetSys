@@ -47,16 +47,13 @@ int creer_serveur(int port)
       return -1;
     }
   const char *message_bienvenue = "Bienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
-  const char *buf = malloc(128*sizeof(char));
-  sleep(1);
+  sleep(1);char buf[128];
+  
   write(sock_client, message_bienvenue, strlen(message_bienvenue));
   while(1)
     {
-      if(read(sock_client, buf, sizeof(buf)) == -1)
-	{
-	  perror("read client");
-	}
-      write(sock_client, buf, strlen(buf));
+      read(sock_client, buf, 128*sizeof(char));
+      write(sock_client, buf, 128*sizeof(char));
     }
   close(sock_client);
   close(sock_serveur);
