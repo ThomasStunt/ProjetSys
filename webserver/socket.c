@@ -6,6 +6,15 @@
 #include <string.h>
 #include <stdio.h>
 #include "socket.h"
+#include <signal.h>
+
+void initialiser_signaux(void)
+{
+  if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+    {
+      perror("signal");
+    }
+}
 
 int creer_serveur(int port)
 {
@@ -27,6 +36,8 @@ int creer_serveur(int port)
     {
       perror("Can not set SO_REUSEADDR option");
     }
+
+  initialiser_signaux();
 
   if(bind(sock_serveur, (struct sockaddr *)&saddr, sizeof(saddr)) == -1)
     {
@@ -61,3 +72,5 @@ int creer_serveur(int port)
   close(sock_client);
   close(sock_serveur);
 }
+
+
