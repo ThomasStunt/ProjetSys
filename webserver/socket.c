@@ -71,26 +71,29 @@ int accept_client(int socketServ) {
 
   int sockClient = 0;
   
+  
   if((sockClient = accept(socketServ, NULL, NULL)) == -1)
     {
       perror("Accept socket_client");
     }
+
+  FILE * client = fdopen(sockClient,"w+");
   
   if(fork() == 0)
     {
       char buf[128];
-      int readed = 0;
-      write(sockClient, message_bienvenue, strlen(message_bienvenue));
+      fprintf(client, message_bienvenue);
+      char *c;
       while(1)
 	{ 
-	  if((readed = read(sockClient, buf, sizeof(buf))) == -1)
+	  if((c = fgets(buf,sizeof(buf),client)) == NULL)
 	    {
-	      perror("read client");
+	      perror("fgets");
 	      return -1;
 	    }
-	  write(sockClient, buf, readed);
+	  fprintf(client,"ProjetSys : %s\n", buf);
 	}
-      close(sockClient);
+      fclose(client);
       exit(0);
     }
   close(sockClient);
