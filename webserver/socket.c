@@ -87,7 +87,7 @@ int accept_client(int socketServ) {
 	      perror("fgets");
 	      return -1;
 	    }
-	  fprintf(client,"ProjetSys : %s\n", buf);
+	  printf("ProjetSys : %s", buf);
 	}
       fclose(client);
       exit(0);
