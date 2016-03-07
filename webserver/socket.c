@@ -91,18 +91,33 @@ int accept_client(int socketServ) {
 	      return -1;
 	    }
 	  int taille = strlen(ligne);
-	  if(strncmp("GET", ligne, 3)== 0){
-	 
-	    for( i = 0; i < taille; i++){
-	      if(isspace(ligne[i]) != 0 || ligne[i] == '\n'){
-		mots++;
+	  if(strncmp("GET", ligne, 3)== 0)
+	    {
+	      char tab[3][10];
+	      int j = 0;
+	      for( i = 0; i < taille; i++){
+		if(isspace(ligne[i]) != 0 || ligne[i] == '\n')
+		  {
+		    mots++;
+		    j=0;
+		  }
+		tab[mots][j] = ligne[i];
+		j++;
 	      }
+	      if(mots-1 == 3)
+		{
+		  printf("GET => OK\n");
+		}
+	      if(strcmp(" HTTP/1.1", tab[2]) == 0 || strcmp(" HTTP/1.0", tab[2]) == 0)
+	      	{
+		  printf("HTML => OK\n");
+		}
 	    }
-	    if(mots-1 == 3){
-	      printf("GET => OK\n");
+	  if(strcmp("\n", buf) != 0 && !strcmp("\r\n", buf) != 0)
+	    {
+	      fprintf(client, buf, strlen(buf));
 	    }
-	    printf("%s", buf);
-	  }
+	  printf("%s", buf);
 	  fclose(client);
 	  exit(0);
 	}
