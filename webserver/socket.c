@@ -78,8 +78,9 @@ int accept_client(int socketServ) {
   if(fork() == 0)
     {
       char buf[128];
-      fprintf(client, message_bienvenue);
       char *c;
+      
+      fprintf(client, message_bienvenue);
       while(1)
 	{ 
 	  if((c = fgets(buf,sizeof(buf),client)) == NULL)
@@ -87,7 +88,7 @@ int accept_client(int socketServ) {
 	      perror("fgets");
 	      return -1;
 	    }
-	  printf("ProjetSys : %s", buf);
+	  printf("%s", buf);
 	}
       fclose(client);
       exit(0);
@@ -96,5 +97,4 @@ int accept_client(int socketServ) {
 
   return 0;
 }
-
 
