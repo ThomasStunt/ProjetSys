@@ -78,23 +78,36 @@ int accept_client(int socketServ) {
   if(fork() == 0)
     {
       char buf[128];
-      char *c;
+      char *ligne;
       
       fprintf(client, message_bienvenue);
       while(1)
-	{ 
-	  if((c = fgets(buf,sizeof(buf),client)) == NULL)
+	{
+	  int mots=0;
+	  int i;
+	  if((ligne = fgets(buf,sizeof(buf),client)) == NULL)
 	    {
 	      perror("fgets");
 	      return -1;
 	    }
-	  printf("%s", buf);
+	  int taille = strlen(ligne);
+	  if(strncmp("GET", ligne, 3)== 0){
+	 
+	    for( i = 0; i < taille; i++){
+	      if(isspace(ligne[i]) != 0 || ligne[i] == '\n'){
+		mots++;
+	      }
+	    }
+	    if(mots-1 == 3){
+	      printf("GET => OK\n");
+	    }
+	    printf("%s", buf);
+	  }
+	  fclose(client);
+	  exit(0);
 	}
-      fclose(client);
-      exit(0);
+      close(sockClient);
+
+      return 0;
     }
-  close(sockClient);
-
-  return 0;
 }
-
