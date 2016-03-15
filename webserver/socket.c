@@ -109,6 +109,9 @@ int accept_client(int socketServ) {
 		{
 		  printf("GET => OK\n");
 		}
+	      else{
+		printf("HTTP/1.1 400 Bad Request \nConnection: close \nContent-Length: 17 \n\n400 Bad request");
+	      }
 	      if(strcmp(" HTTP/1.1", tab[2]) == 0 || strcmp(" HTTP/1.0", tab[2]) == 0)
 	      	{
 		  printf("HTML => OK\n");
