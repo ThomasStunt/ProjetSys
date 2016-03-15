@@ -8,7 +8,7 @@
 #include "socket.h"
 #include <signal.h>
 
-const char *message_bienvenue = "Bienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
+const char *message_bienvenue = "\nBienvenue a vous !\nVous venez de vous connecter sur notre serveur. Nous vous souhaitons de bien profiter de votre visite sur notre serveur.\nSi vous avez une reclamation ou toute autre suggestion, veuillez envoyer un email aux createurs (vous trouverez dans le fichier 'AUTHORS.md' les adresses mails)\nCe serveur est pour l'instant pour un client unique.\nVous pouvez communiquer avec le serveur, il vous renverra votre propre message.\nPassez une bonne journee.\nThomas PERRIER et Benjamin DUCAUROY\n\n";
 
 void traitement_signal(int sig)
 {
@@ -80,7 +80,6 @@ int accept_client(int socketServ) {
       char buf[128];
       char *ligne;
       
-      fprintf(client, message_bienvenue);
       while(1)
 	{
 	  int mots=0;
@@ -109,21 +108,21 @@ int accept_client(int socketServ) {
 		{
 		  printf("GET => OK\n");
 		}
-	      else{
-		printf("HTTP/1.1 400 Bad Request \nConnection: close \nContent-Length: 17 \n\n400 Bad request");
-	      }
 	      if(strcmp(" HTTP/1.1", tab[2]) == 0 || strcmp(" HTTP/1.0", tab[2]) == 0)
 	      	{
 		  printf("HTML => OK\n");
 		}
+	      fprintf(client, message_bienvenue);
+	      printf("HTTP/1.1 200 OK\r\n");
+	    }
+	  else
+	    { 
+	      printf("HTTP/1.1 400 Bad Request \r\nConnection: close \r\nContent-Length: 17 \r\n\n400 Bad request\r\n");
+	      exit(0);
 	    }
 	  if(strcmp("\n", buf) != 0 && strcmp("\r\n", buf) != 0)
 	    {
-	      fprintf(client, buf, strlen(buf));
-	    }
-	  if(strcmp(buf, "\n") == 0)
-	    {
-	      exit(0);
+	      printf(buf, strlen(buf));
 	    }
 	  else
 	    {
