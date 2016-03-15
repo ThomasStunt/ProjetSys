@@ -95,15 +95,16 @@ int accept_client(int socketServ) {
 	    {
 	      char tab[3][10];
 	      int j = 0;
-	      for( i = 0; i < taille; i++){
-		if(isspace(ligne[i]) != 0 || ligne[i] == '\n')
-		  {
-		    mots++;
-		    j=0;
-		  }
-		tab[mots][j] = ligne[i];
-		j++;
-	      }
+	      for( i = 0; i < taille; i++)
+		{
+		  if(isspace(ligne[i]) != 0 || ligne[i] == '\n')
+		    {
+		      mots++;
+		      j=0;
+		    }
+		  tab[mots][j] = ligne[i];
+		  j++;
+		}
 	      if(mots-1 == 3)
 		{
 		  printf("GET => OK\n");
@@ -113,11 +114,18 @@ int accept_client(int socketServ) {
 		  printf("HTML => OK\n");
 		}
 	    }
-	  if(strcmp("\n", buf) != 0 && !strcmp("\r\n", buf) != 0)
+	  if(strcmp("\n", buf) != 0 && strcmp("\r\n", buf) != 0)
 	    {
 	      fprintf(client, buf, strlen(buf));
 	    }
-	  printf("%s", buf);
+	  if(strcmp(buf, "\n") == 0)
+	    {
+	      exit(0);
+	    }
+	  else
+	    {
+	      printf("%s", buf);
+	    }
 	  fclose(client);
 	  exit(0);
 	}
